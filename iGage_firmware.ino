@@ -76,6 +76,7 @@
 //        - Fixed bug in time calculation...not all 8 hex characters were getting processed
 //        -Incocorporated both V2,V3 and V4 boards into the same software package.  The board type is selected by setting the 
 //          corrext 'board_version' prior to uploading it to the IC.
+//        -Moved the code over to github repository with version control
 
 
 
