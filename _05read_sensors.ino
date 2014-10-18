@@ -134,7 +134,7 @@ int readmaxttl(int depths[]){
   while (read_max){
     if (max_serial.available()>0) {
         in = max_serial.peek();
-        //Serial.print(in);  // Uncomment to see all the maxbotix output
+        Serial.print(in);  // Uncomment to see all the maxbotix output
         if (max_serial.peek() == 13){
           range = false;
           max_serial.read();

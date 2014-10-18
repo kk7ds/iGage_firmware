@@ -243,6 +243,7 @@ void loop()
   ////////Send the data via the irridium modem///////////////////
   if(now() > send_sat_time) SEND_MODEM_DATA = true;
   if(watchdog > irid_interval*2) {
+    readsensors(1);
     SEND_MODEM_DATA = true;
   }
 
