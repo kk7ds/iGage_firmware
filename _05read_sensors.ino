@@ -108,17 +108,12 @@ void isort(int *a, int n)
 
 int readmaxttl(int depths[]){
   max_serial.listen(); 
-  byte startline = 5;    ////Line after which range readings begin
   byte index = 0;
   int reading[10];
   int  value = 0;
-  byte line = 0;
-  byte length = 0;
   byte read_max = 1;
   unsigned long time;
   boolean range = false; 
-
-  char instring[10];   
   char in;
   
   //Turn on LDO and Moxbotix
@@ -130,47 +125,31 @@ int readmaxttl(int depths[]){
   }
   
   time = millis();
-  length = 0;
+  
+  value = 0;
+  range = false;
   while (read_max){
-    delay(10);
+    //delay(10);
     if (((millis()-time)>10000) || index > 9) {   ////Time out after 10 seconds or after the 13th line returned from the MB sensor
-      //  read_max = false;
         break;
     }    
     else if (max_serial.available()>0) {
-        in = max_serial.peek();
-        Serial.print(in);  // Uncomment to see all the maxbotix output
-        if (max_serial.peek() == 13){
-          range = false;
-          max_serial.read();
-          line++;
-          if(line > startline){
-            value = 0;
-            for(i=0;i<length;i++){
-              value = (int) value *10 +  (instring[i] - 48);
-            }
-            Serial.println(value);
-            if(value > 500 & value < 9999){
-              reading[index] = value;
-              index = index + 1;
-            }
+        in = max_serial.read();
+        Serial.print(in);
+        if (range & in != 13) {
+          value = (int)value*10 + (in - 48);
+        }  
+        if (in == 82) range = true;
+        if (in == 13 & range == true){
+          Serial.println(value);
+          if(value > 500 & value < 9999){
+            reading[index] = value;
+            index++;
           }  
-          length = 0;
-        }
-        else if (max_serial.peek() == 82){
-          max_serial.read();
-          range = true;
-        }
-        else if (range && (line > startline)){
-          instring[length] = max_serial.read();
-          length++;
-          Serial.flush();
-        }
-        else {
-          max_serial.read();
-      }
-    }
- 
+          value = 0;
+          range = false;
+        }  
+    } 
   }   //End of while read max
 
 
@@ -182,12 +161,11 @@ int readmaxttl(int depths[]){
   digitalWrite(LDOENABLE,LOW);
   
   isort(reading,(index));
-  line = index/2;
   if(index == 0){
-    depths[1] = -9999/2.54;
+    depths[1] = -4000;
   }
   else{
-    depths[1] = getEEPROMint(1) - (reading[line])/2.54; 
+    depths[1] = getEEPROMint(1) - (reading[index/2])/2.54; 
   }
   depths[0] = 0;     //No raw depth
 

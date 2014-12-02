@@ -77,13 +77,13 @@
 //        -Incocorporated both V2,V3 and V4 boards into the same software package.  The board type is selected by setting the 
 //          corrext 'board_version' prior to uploading it to the IC.
 //        -Moved the code over to github repository with version control
-// V3.07.1
-//        -Added a 10 ms delay after 'while (read_max){' in the maxbotix read loop
-//        -This corrected an islolated case where unit got stuck in loop
+// V3.08
+//        -Simplified maxbotix serial ttl read subroutine.  
+//        -This reduces program size by about 100 bytes
 
 
 //Version
-char version[5] = "3.07";
+char version[5] = "3.08";
 
 //This variable needs to match the appropriate board....check the google doc spreadsheet for board version number
 byte board_version = 2;
