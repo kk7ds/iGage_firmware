@@ -132,7 +132,12 @@ int readmaxttl(int depths[]){
   time = millis();
   length = 0;
   while (read_max){
-    if (max_serial.available()>0) {
+    delay(10);
+    if (((millis()-time)>10000) || index > 9) {   ////Time out after 10 seconds or after the 13th line returned from the MB sensor
+      //  read_max = false;
+        break;
+    }    
+    else if (max_serial.available()>0) {
         in = max_serial.peek();
         Serial.print(in);  // Uncomment to see all the maxbotix output
         if (max_serial.peek() == 13){
@@ -165,9 +170,7 @@ int readmaxttl(int depths[]){
           max_serial.read();
       }
     }
-    else if ((millis()-time)>10000 || index > 9){     ////Time out after 10 seconds or after the 13th line returned from the MB sensor
-        read_max = false;
-    } 
+ 
   }   //End of while read max
 
 
