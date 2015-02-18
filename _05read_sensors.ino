@@ -107,6 +107,7 @@ void isort(int *a, int n)
 
 
 int readmaxttl(int depths[]){
+  depths[1] = -4000;
   max_serial.listen(); 
   byte index = 0;
   int reading[10];
@@ -126,26 +127,28 @@ int readmaxttl(int depths[]){
   
   time = millis();
   
-  value = 0;
-  range = false;
-  while (read_max){
+  
+  
+  while(read_max){
     //delay(10);
-    if (((millis()-time)>10000) || index > 9) {   ////Time out after 10 seconds or after the 13th line returned from the MB sensor
+    if (((millis()-time)>10000) || index > 9) {   ////Time out after 10 seconds or after 10th reading from maxbotix
         break;
     }    
     else if (max_serial.available()>0) {
+        depths[1] = -3936;
         in = max_serial.read();
         Serial.print(in);
-        if (range & in != 13) {
+        if (range & (in != 13)) {
           value = (int)value*10 + (in - 48);
         }  
         if (in == 82) range = true;
         if (in == 13 & range == true){
-          Serial.println(value);
+          //Serial.println(value);
+          Serial.println();
           if(value > 500 & value < 9999){
             reading[index] = value;
             index++;
-          }  
+          }             
           value = 0;
           range = false;
         }  
@@ -160,13 +163,13 @@ int readmaxttl(int depths[]){
   digitalWrite(MAXENABLE,LOW); 
   digitalWrite(LDOENABLE,LOW);
   
-  isort(reading,(index));
-  if(index == 0){
-    depths[1] = -4000;
-  }
-  else{
+  
+
+  if(index > 0){
+    isort(reading,(index));
     depths[1] = getEEPROMint(1) - (reading[index/2])/2.54; 
   }
+  
   depths[0] = 0;     //No raw depth
 
   Ir_serial.listen();

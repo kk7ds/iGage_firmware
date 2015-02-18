@@ -86,7 +86,7 @@
 char version[5] = "3.08";
 
 //This variable needs to match the appropriate board....check the google doc spreadsheet for board version number
-byte board_version = 2;
+byte board_version = 4;
 
 // Gloabl variable counter
 int i;
