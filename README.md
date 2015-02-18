@@ -1,4 +1,4 @@
 iGage_firmware
 ==============
 
-iGage Arduino Firmware Files
+iGage Arduino Firmware and Library Files
