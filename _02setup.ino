@@ -53,7 +53,7 @@ void setup()
   if(irid_tbase > 2099818235) {
     
     irid_tbase = 1173325821;                 //Chnage this value to update the default iridium base epock time.
-                                             //The second iridium time epoch May 11, 2014, at 14:23:55 (1399847035)
+                                             //The second iridium time epoch May 11, 2014, at 14:23:55 (1399818235)
                                              // Epoch 1 was 8 march 2007 3:50:21 UTC (1173325821)
     EEPROM_writelong(23,irid_tbase);
   }
