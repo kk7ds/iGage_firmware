@@ -203,6 +203,7 @@ byte process_command(char instring[20],byte length)
       break;
     default:
       Serial.println("Unk!");
+      SEND_MODEM_STATUS = FALSE;
     }
     Serial.flush();
     return redisplay_menu;

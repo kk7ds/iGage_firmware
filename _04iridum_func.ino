@@ -268,9 +268,10 @@ byte get_message(){
   
   if (check == checksum){
     Serial.println("OK");
+    SEND_MODEM_STATUS = TRUE;
     process_command(mt_message,mes_length);
     ///Change Global Flag
-    SEND_MODEM_STATUS = TRUE; 
+    
   }
   
   
