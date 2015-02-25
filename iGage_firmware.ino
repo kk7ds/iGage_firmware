@@ -80,10 +80,15 @@
 // V3.08
 //        -Simplified maxbotix serial ttl read subroutine.  
 //        -This reduces program size by about 100 bytes
+// V3.09  
+//        -Updated Time Library
+//        -Modified read_sensors subroutine
+//        -Update to new Iridium epoch time
+//        -Updated modem send status to only function if a correct command is received
 
 
 //Version
-char version[5] = "3.08";
+char version[5] = "3.09";
 
 //This variable needs to match the appropriate board....check the google doc spreadsheet for board version number
 byte board_version = 4;
