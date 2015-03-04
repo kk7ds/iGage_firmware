@@ -85,13 +85,17 @@
 //        -Modified read_sensors subroutine
 //        -Update to new Iridium epoch time
 //        -Updated modem send status to only function if a correct command is received
+// V3.10
+//        -Added the baord version number as a configurable command, software can now run on any boards with menu setting of board version number
+//
+
 
 
 //Version
-char version[5] = "3.09";
+char version[5] = "3.10";
 
 //This variable needs to match the appropriate board....check the google doc spreadsheet for board version number
-byte board_version = 4;
+byte board_version;
 
 // Gloabl variable counter
 int i;

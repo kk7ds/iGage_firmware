@@ -197,6 +197,11 @@ byte process_command(char instring[20],byte length)
       retry_delay = irid_interval/10;
       set_times();
       break;
+    case 86:
+      // V Set Board Version Number
+      board_version = value;
+      EEPROM.write(28,value);
+      break;    
     case 88:
       // X
       redisplay_menu = 0;
@@ -277,6 +282,8 @@ void menu() {
   Serial.println(F("C Clr Mem"));
   Serial.println(F("M Set iTime"));
   Serial.println(F("S Send Imsg"));
+  Serial.print(F("V Brd. Ver: "));
+  Serial.println(board_version);
   Serial.println(F("X log"));
   delay(100);
   Serial.flush();

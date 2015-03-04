@@ -57,6 +57,12 @@ void setup()
                                              // Epoch 1 was 8 march 2007 3:50:21 UTC (1173325821)
     EEPROM_writelong(23,irid_tbase);
   }
+  
+  board_version = EEPROM.read(28);
+  if(board_version < 0){
+    board_version = 4;
+    EEPROM.write(28,4);
+  }  
 
   //////////////////Determine number of TACS and add 12 character header////////////////////
   packet_l = tac_string.getDeviceCount()*2+10;
