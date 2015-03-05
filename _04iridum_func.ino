@@ -59,6 +59,8 @@ boolean sendstatus() {
   datapacket += version[1];
   datapacket += version[2];
   datapacket += version[3];
+  datapacket += "B";
+  datapacket += EEPROM.read(28);
   datapacket += "H";
   datapacket += getEEPROMint(1);
   datapacket += "I";
@@ -67,9 +69,7 @@ boolean sendstatus() {
   datapacket += irid_interval;
   datapacket += "G";
   datapacket += i2caddress;
-  datapacket += "PS";
-  datapacket += packet_l;
-  datapacket += "B";
+  datapacket += "S";
   datapacket += irid_tbase;
   if(TIME_AUTO_SET) datapacket += "A";
   boolean resend = !senddata();
