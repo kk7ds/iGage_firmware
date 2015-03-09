@@ -49,17 +49,14 @@ void setup()
   retry_delay = irid_interval/10;
   
   ////////////////Get Iridium Base Time from EEPROM////////////
-  irid_tbase = EEPROM_readlong(23);
-  if(irid_tbase > 2099818235) {
     
-    irid_tbase = 1173325821;                 //Chnage this value to update the default iridium base epock time.
+  irid_tbase = 1399818235;                 //Chnage this value to update the default iridium base epock time.
                                              //The second iridium time epoch May 11, 2014, at 14:23:55 (1399818235)
                                              // Epoch 1 was 8 march 2007 3:50:21 UTC (1173325821)
-    EEPROM_writelong(23,irid_tbase);
-  }
+  EEPROM_writelong(23,irid_tbase);
   
   board_version = EEPROM.read(28);
-  if(board_version < 0){
+  if(board_version == 255){
     board_version = 4;
     EEPROM.write(28,4);
   }  
