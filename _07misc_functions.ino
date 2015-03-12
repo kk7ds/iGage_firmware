@@ -111,24 +111,31 @@ void printAddress(DeviceAddress deviceAddress)
 
 
 void EEPROM_writelong(int address, unsigned long value) {
-  //truncate upper part and write lower part into EEPROM
-  setEEPROM(word(value),address+2);
-  //shift upper part down
-  value = value >> 16;
-  //truncate and write
-  setEEPROM(word(value),address);
+      //Decomposition from a long to 4 bytes by using bitshift.
+      //One = Most significant -> Four = Least significant byte
+      byte four = (value & 0xFF);
+      byte three = ((value >> 8) & 0xFF);
+      byte two = ((value >> 16) & 0xFF);
+      byte one = ((value >> 24) & 0xFF);
+
+      //Write the 4 bytes into the eeprom memory.
+      EEPROM.write(address, four);
+      EEPROM.write(address + 1, three);
+      EEPROM.write(address + 2, two);
+      EEPROM.write(address + 3, one);
 }
 
-unsigned long EEPROM_readlong(int address) {
-  //use word read function for reading upper part
-  unsigned long dword = getEEPROMint(address);
-  //shift read word up
-  dword = dword << 16;
-  // read lower word from EEPROM and OR it into double word
-  dword = dword | getEEPROMint(address+2);
-  return dword;
-}
 
+unsigned long EEPROM_readlong(int address)    {
+      //Read the 4 bytes from the eeprom memory.
+      long four = EEPROM.read(address);
+      long three = EEPROM.read(address + 1);
+      long two = EEPROM.read(address + 2);
+      long one = EEPROM.read(address + 3);
+
+      //Return the recomposed long by using bitshift.
+      return ((four << 0) & 0xFF) + ((three << 8) & 0xFFFF) + ((two << 16) & 0xFFFFFF) + ((one << 24) & 0xFFFFFFFF);
+}
 
 
 

@@ -87,7 +87,7 @@
 //        -Updated modem send status to only function if a correct command is received
 // V3.10
 //        -Added the baord version number as a configurable command, software can now run on any boards with menu setting of board version number
-//
+//        -bugfix for eeprom long read and write
 
 
 
