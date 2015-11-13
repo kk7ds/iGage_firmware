@@ -203,13 +203,13 @@ boolean senddata() {
 
     
     ///  Check for incoming message and process
-    if (atoi(subStr(response,",",3)) == 1){
+    if (atoi(subStr(response,(char *)",",3)) == 1){
       Serial.println("Msg");
       get_message();
       set_times();
     }
 
-    if ((atoi(subStr(response,",",1)) < 3) && (y > 10))   {
+    if ((atoi(subStr(response,(char*)",",1)) < 3) && (y > 10))   {
       Serial.println("Sent!");
       Serial.flush();
       digitalWrite(LEDPIN, LOW);                    

@@ -17,7 +17,7 @@ void setup()
   
   if(year()< 2014 | year() > 2030){
     Serial.println(year());
-    process_command("D000000010110",13);     //If time not set then set time to Jan 1, 2010 to get things running
+    process_command((char *)"D000000010110",13);     //If time not set then set time to Jan 1, 2010 to get things running
     if (irid_interval >= 1){
       if (TIME_AUTO_SET) getItime(1,30);                //Try to set with iridium time as well.
     }
