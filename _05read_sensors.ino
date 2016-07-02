@@ -31,16 +31,16 @@ void readsensors(int record){
   temp_correct = (tac_string.getTempCByIndex(0))*10;
 
   ///////read max sensor////////////////////////////////
-  readmaxttl(maxdepth);
+  readmaxttl(maxdepth,temp_correct);
   if(record) {
     loadbyte(first);
     loadint(second);
     //loadbyte(status_byte);
     loadbyte(last_retries);
     loadint(batt);
-    loadint(ATtemp);
+    loadint(temp_correct);
     //loadint(maxdepth[0]);      //Raw Depth
-    loadint(maxdepth[1]);        // Temperature Compensated Depth
+    loadint(maxdepth[1]);      //Temperature Compensated Depth
   }
   else {
   Serial.println();  
@@ -48,47 +48,43 @@ void readsensors(int record){
   Serial.println(float(batt/100.0),2);
   Serial.print("PT:");
   Serial.println(float(ATtemp/10.0),1);
-  //Serial.print("RawDepth:");
-  //Serial.println(float(maxdepth[0]/10.0),1);
+  Serial.print("RawDepth:");
+  Serial.println(float(maxdepth[0]/10.0),1);
   Serial.print("D:");
   Serial.println(float(maxdepth[1]/10.0),1);
   Serial.print("1W:");
   Serial.println(tac_string.getDeviceCount(),DEC);
   }
+  
   //////read TAC cable////////
-  for (int i=0; i<tac_string.getDeviceCount(); i++) {
-    tac_string.requestTemperatures(); // Send the command to get temperatures
-    ATtemp = (tac_string.getTempCByIndex(i))*10;
-    if(record) {
-    loadint(ATtemp);
-    
-    }
-    else {
-      Serial.print("T");
-      Serial.print(i);
-      Serial.print(":");
-      Serial.println(float(ATtemp/10.0),1);
-    }
-  }
+//  for (int i=0; i<tac_string.getDeviceCount(); i++) {
+//    tac_string.requestTemperatures(); // Send the command to get temperatures
+//    ATtemp = (tac_string.getTempCByIndex(i))*10;
+//    if(record) {
+//    loadint(ATtemp);
+//    
+//    }
+//    else {
+//      Serial.print("T");
+//      Serial.print(i);
+//      Serial.print(":");
+//      Serial.println(float(ATtemp/10.0),1);
+//    }
+//  }
   Serial.println();
  
 }
 
 
-//int tempcorrect(float reading, float temp)  {
-//  float zeroK = 273.15;
-//  float a = 20.05;
-//  float b = 2;
-//  float tof;
-//  float d = 0.0000147 ;
-//  float conv = 39.37;
-//  float dm = 0;
-//  tof = reading*d;
-//  dm = tof*((a*sqrt(temp+zeroK))/b)*conv;
-//  
-//  int corrected = dm * 10;
-//  return corrected;
-//}
+int tempcorrect(float reading, float temp)  {
+  float at_twentyfive = 672;
+  float z = 643.855;
+  float zeroK = 273.15;
+  float actual_speed = z*sqrt(((temp+zeroK)/zeroK));
+  int corrected = reading*(actual_speed/at_twentyfive);
+
+  return corrected;
+}
 
 ////Function to sort in descending order
 void isort(int *a, int n)
@@ -106,16 +102,17 @@ void isort(int *a, int n)
 }
 
 
-int readmaxttl(int depths[]){
+int readmaxttl(int depths[],int temp_correct){
   depths[1] = -4000;
   max_serial.listen(); 
   byte index = 0;
-  int reading[10];
+  int reading[20];
   int  value = 0;
   byte read_max = 1;
   unsigned long time;
   boolean range = false; 
   char in;
+  byte skipvals=0;
   
   //Turn on LDO and Moxbotix
   digitalWrite(LDOENABLE, HIGH);
@@ -131,7 +128,7 @@ int readmaxttl(int depths[]){
   
   while(read_max){
     //delay(10);
-    if (((millis()-time)>10000) || index > 9) {   ////Time out after 10 seconds or after 10th reading from maxbotix
+    if (((millis()-time)>20000) || index > 19) {   ////Time out after 10 seconds or after 10th reading from maxbotix
         break;
     }    
     else if (max_serial.available()>0) {
@@ -143,14 +140,17 @@ int readmaxttl(int depths[]){
         }  
         if (in == 82) range = true;
         if (in == 13 & range == true){
-          //Serial.println(value);
-          Serial.println();
-          if(value > 500 & value < 9999){
+          skipvals++;
+          if(value > 500 & value < 9999 & skipvals > 10){
+            Serial.println();
             reading[index] = value;
             index++;
-          }             
-          value = 0;
-          range = false;
+          }
+          else{
+            Serial.println('S');
+         }
+         value = 0;
+         range = false;
         }  
     } 
   }   //End of while read max
@@ -167,10 +167,10 @@ int readmaxttl(int depths[]){
 
   if(index > 0){
     isort(reading,(index));
-    depths[1] = getEEPROMint(1) - (reading[index/2])/2.54; 
+    depths[0] = getEEPROMint(1) - (reading[index/2])/2.54; 
   }
   
-  depths[0] = 0;     //No raw depth
+  depths[1] = tempcorrect(depths[0],temp_correct/10);     //No raw depth
 
   Ir_serial.listen();
 

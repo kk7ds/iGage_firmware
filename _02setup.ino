@@ -68,7 +68,8 @@ void setup()
   }  
 
   //////////////////Determine number of TACS and add 12 character header////////////////////
-  packet_l = tac_string.getDeviceCount()*2+10;
+  //packet_l = tac_string.getDeviceCount()*2+10;
+  packet_l = 10;
 
   /////////////////////GO INTO INTERACTIVE MODE/////////////
   set_times();

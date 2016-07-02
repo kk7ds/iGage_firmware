@@ -88,11 +88,14 @@
 // V3.10
 //        -Added the baord version number as a configurable command, software can now run on any boards with menu setting of board version number
 //        -bugfix for eeprom long read and write
+// V3.11
+//        -Added one-wire temperature compensation
+//        
 
 
 
 //Version
-char version[5] = "3.10";
+char version[5] = "3.11";
 
 //This variable needs to match the appropriate board....check the google doc spreadsheet for board version number
 byte board_version;
