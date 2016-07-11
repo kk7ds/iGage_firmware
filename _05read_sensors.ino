@@ -12,7 +12,7 @@
 void readsensors(int record){
   //Clear global datapacket 
   datapacket = "";  
-  int ATtemp,batt,inches,temp_correct;
+  int panelTemp,batt,inches,airTemp;
   byte first = (byte(year()-2010) << 4) | month();
   int second = byte(day()) << 11;
   int shift = byte(hour()) << 6;
@@ -23,22 +23,22 @@ void readsensors(int record){
   delay(100); 
   ///////read Panel Temp sensor////////////////////////////////
   panel_temp.requestTemperatures(); // Send the command to get temperatures
-  ATtemp = (panel_temp.getTempCByIndex(0))*10;
+  panelTemp = (panel_temp.getTempCByIndex(0))*10;
   delay(50);
  
   ///////read AirTemp sensor////////////////////////////////
   tac_string.requestTemperatures(); // Send the command to get temperatures
-  temp_correct = (tac_string.getTempCByIndex(0))*10;
+  airTemp = (tac_string.getTempCByIndex(0))*10;
 
   ///////read max sensor////////////////////////////////
-  readmaxttl(maxdepth,temp_correct);
+  readmaxttl(maxdepth,airTemp);
   if(record) {
     loadbyte(first);
     loadint(second);
     //loadbyte(status_byte);
     loadbyte(last_retries);
     loadint(batt);
-    loadint(temp_correct);
+    loadint(airTemp);
     //loadint(maxdepth[0]);      //Raw Depth
     loadint(maxdepth[1]);      //Temperature Compensated Depth
   }
@@ -47,7 +47,9 @@ void readsensors(int record){
   Serial.print("V:");
   Serial.println(float(batt/100.0),2);
   Serial.print("PT:");
-  Serial.println(float(ATtemp/10.0),1);
+  Serial.println(float(panelTemp/10.0),1);
+  Serial.print("AT:");
+  Serial.println(float(airTemp/10.0),1); 
   Serial.print("RawDepth:");
   Serial.println(float(maxdepth[0]/10.0),1);
   Serial.print("D:");
@@ -77,7 +79,7 @@ void readsensors(int record){
 
 
 int tempcorrect(float reading, float temp)  {
-  float at_twentyfive = 672;
+  float at_twentyfive = 672;    //Speed of sound at 25c ft/s
   float z = 643.855;
   float zeroK = 273.15;
   float actual_speed = z*sqrt(((temp+zeroK)/zeroK));
