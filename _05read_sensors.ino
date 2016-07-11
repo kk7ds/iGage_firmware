@@ -24,12 +24,13 @@ void readsensors(int record){
   ///////read Panel Temp sensor////////////////////////////////
   panel_temp.requestTemperatures(); // Send the command to get temperatures
   panelTemp = (panel_temp.getTempCByIndex(0))*10;
+  
   delay(50);
  
   ///////read AirTemp sensor////////////////////////////////
   tac_string.requestTemperatures(); // Send the command to get temperatures
   airTemp = (tac_string.getTempCByIndex(0))*10;
-
+  if(airTemp < -1000) airTemp = 200;
   ///////read max sensor////////////////////////////////
   readmaxttl(maxdepth,airTemp);
   if(record) {
