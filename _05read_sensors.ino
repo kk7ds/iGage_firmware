@@ -30,7 +30,9 @@ void readsensors(int record){
   ///////read AirTemp sensor////////////////////////////////
   tac_string.requestTemperatures(); // Send the command to get temperatures
   airTemp = (tac_string.getTempCByIndex(0))*10;
-  if(airTemp < -1000) airTemp = 200;
+  if(airTemp < -1000) airTemp = 200;  #Should cover when no sensor responds
+  if(airTemp > 800) airTemp = 200;    #Should cover when sensor responds with 85
+  
   ///////read max sensor////////////////////////////////
   readmaxttl(maxdepth,airTemp);
   if(record) {
