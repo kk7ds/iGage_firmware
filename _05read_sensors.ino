@@ -16,6 +16,7 @@ void readsensors(int record){
   byte first = (byte(year()-2010) << 4) | month();
   int second = byte(day()) << 11;
   int shift = byte(hour()) << 6;
+  int hasAT = 0;
   second = second | shift;
   shift = minute();
   second = second | shift;
@@ -28,11 +29,15 @@ void readsensors(int record){
   delay(50);
  
   ///////read AirTemp sensor////////////////////////////////
-  tac_string.requestTemperatures(); // Send the command to get temperatures
-  airTemp = (tac_string.getTempCByIndex(0))*10;
-  if(airTemp < -1000) airTemp = 200;  #Should cover when no sensor responds
-  if(airTemp > 800) airTemp = 200;    #Should cover when sensor responds with 85
-  
+  if(tac_string.getDeviceCount() > 0){
+    tac_string.requestTemperatures(); // Send the command to get temperatures
+    airTemp = (tac_string.getTempCByIndex(0))*10;
+    if(airTemp < -1000) airTemp = -9999;  //Should cover when no sensor responds
+    if(airTemp > 800) airTemp = -9999;  //Should cover when sensor responds with 85
+  }  
+  else{  
+     airTemp = -9999;
+  }    
   ///////read max sensor////////////////////////////////
   readmaxttl(maxdepth,airTemp);
   if(record) {
@@ -41,7 +46,12 @@ void readsensors(int record){
     //loadbyte(status_byte);
     loadbyte(last_retries);
     loadint(batt);
-    loadint(airTemp);
+    if(airTemp > -9999){
+      loadint(airTemp);
+    }
+    else{
+      loadint(panelTemp);
+    }    
     //loadint(maxdepth[0]);      //Raw Depth
     loadint(maxdepth[1]);      //Temperature Compensated Depth
   }
@@ -82,6 +92,9 @@ void readsensors(int record){
 
 
 int tempcorrect(float reading, float temp)  {
+  if(temp = -9999){
+    return reading;
+  }
   float at_twentyfive = 672;    //Speed of sound at 25c ft/s
   float z = 643.855;
   float zeroK = 273.15;
