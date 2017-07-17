@@ -92,7 +92,7 @@ void readsensors(int record){
 
 
 int tempcorrect(float reading, float temp)  {
-  if(temp = -9999){
+  if(temp == -9999){
     return reading;
   }
   float at_twentyfive = 672;    //Speed of sound at 25c ft/s

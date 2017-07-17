@@ -90,7 +90,8 @@
 //        -bugfix for eeprom long read and write
 // V3.11
 //        -Added one-wire temperature compensation
-//        
+// V3.11a
+//        -Fixed minor bug in manual Air Temp correction for Maxbotix       
 
 
 
