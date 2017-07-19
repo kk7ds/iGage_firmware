@@ -20,7 +20,7 @@ void readsensors(int record){
   second = second | shift;
   shift = minute();
   second = second | shift;
-  batt =analogRead(BATPIN)*2*.50;
+  batt =analogRead(BATPIN)*2*5/10.23; // reading * 5.0(ref)/1023 * 2 (voltage divider) / 100 (scale reading)
   delay(100); 
   ///////read Panel Temp sensor////////////////////////////////
   panel_temp.requestTemperatures(); // Send the command to get temperatures
@@ -92,7 +92,7 @@ void readsensors(int record){
 
 
 int tempcorrect(float reading, float temp)  {
-  if(temp == -9999){
+  if(temp < -100){
     return reading;
   }
   float at_twentyfive = 672;    //Speed of sound at 25c ft/s
@@ -187,6 +187,7 @@ int readmaxttl(int depths[],int temp_correct){
     isort(reading,(index));
     depths[0] = getEEPROMint(1) - (reading[index/2])/2.54; 
   }
+
   
   depths[1] = tempcorrect(depths[0],temp_correct/10);     //No raw depth
 
