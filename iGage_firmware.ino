@@ -92,7 +92,8 @@
 //        -Added one-wire temperature compensation
 // V3.11a
 //        -Fixed minor bug in manual Air Temp correction for Maxbotix       
-
+// V3.11b
+//        -Minor upgrade to manual Air Temp correction for Maxbotix
 
 
 //Version

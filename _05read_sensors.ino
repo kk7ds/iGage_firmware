@@ -43,16 +43,14 @@ void readsensors(int record){
   if(record) {
     loadbyte(first);
     loadint(second);
-    //loadbyte(status_byte);
     loadbyte(last_retries);
     loadint(batt);
-    if(airTemp > -9999){
+    if(airTemp != -9999){
       loadint(airTemp);
     }
     else{
       loadint(panelTemp);
     }    
-    //loadint(maxdepth[0]);      //Raw Depth
     loadint(maxdepth[1]);      //Temperature Compensated Depth
   }
   else {
@@ -92,7 +90,8 @@ void readsensors(int record){
 
 
 int tempcorrect(float reading, float temp)  {
-  if(temp < -100){
+
+  if(temp == -999){
     return reading;
   }
   float at_twentyfive = 672;    //Speed of sound at 25c ft/s
@@ -120,7 +119,7 @@ void isort(int *a, int n)
 }
 
 
-int readmaxttl(int depths[],int temp_correct){
+int readmaxttl(int depths[],int temperature){
   depths[1] = -4000;
   max_serial.listen(); 
   byte index = 0;
@@ -189,7 +188,7 @@ int readmaxttl(int depths[],int temp_correct){
   }
 
   
-  depths[1] = tempcorrect(depths[0],temp_correct/10);     //No raw depth
+  depths[1] = tempcorrect(depths[0],temperature/10);     //No raw depth
 
   Ir_serial.listen();
 
