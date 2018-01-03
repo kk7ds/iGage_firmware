@@ -8,6 +8,7 @@
 #include <DallasTemperature.h>
 #include <avr/sleep.h>
 #include <Time.h>  
+#include <TimeLib.h>
 #include <stdlib.h> 
 #include <MemoryFree.h>
 #include <DS1307RTC.h>  // a basic DS1307 library that returns time as a time_t
